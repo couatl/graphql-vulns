@@ -1,0 +1,82 @@
+type User {
+  id: ID!
+  email: String!
+  name: String!
+}
+
+type Shop {
+  id: ID!
+  name: String
+  products: [Product!]
+}
+
+type Product {
+  id: ID!
+  name: String
+  shop: Shop
+}
+
+type LoginPayload {
+  statusCode: Int!
+  token: String
+  message: String
+  user: User
+}
+
+type DeleteUserPayload {
+  user: User
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input CreateProductImageInput {
+  url: String!
+  description: String!
+}
+
+input CreateProductInput {
+  name: String!
+  shopId: ID!
+}
+
+type ChangeMyProductsPayload {
+  statusCode: Int!
+  message: String
+}
+
+type UserInfoPayload {
+  statusCode: Int!
+  message: String
+  user: User
+}
+
+type MyProductsPayload {
+  statusCode: Int!
+  message: String
+  products: [Product]
+}
+
+type Query {
+  products: [Product]
+  searchProducts(namePrefix: String): [Product]
+  myProducts(userId: ID!): MyProductsPayload
+  userInfo(userId: ID!): UserInfoPayload
+}
+
+type Mutation {
+  loginUser(input: LoginInput!): LoginPayload
+  createUser(input: CreateUserInput!): LoginPayload
+  deleteUser(id: ID!): DeleteUserPayload
+  createProduct(input: CreateProductInput!): Product
+  addToMyProducts(id: ID!, userId: ID!): ChangeMyProductsPayload
+  deleteFromMyProducts(id: ID!, userId: ID!): ChangeMyProductsPayload
+}
