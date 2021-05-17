@@ -43,11 +43,6 @@ input CreateProductImageInput {
   description: String!
 }
 
-input CreateProductInput {
-  name: String!
-  shopId: ID!
-}
-
 type ChangeMyProductsPayload {
   statusCode: Int!
   message: String
@@ -75,8 +70,7 @@ type Query {
 type Mutation {
   loginUser(input: LoginInput!): LoginPayload
   createUser(input: CreateUserInput!): LoginPayload
-  deleteUser(id: ID!): DeleteUserPayload
-  createProduct(input: CreateProductInput!): Product
+  createProduct(name: String!, shopId: ID!): Product
   addToMyProducts(id: ID!, userId: ID!): ChangeMyProductsPayload
   deleteFromMyProducts(id: ID!, userId: ID!): ChangeMyProductsPayload
 }

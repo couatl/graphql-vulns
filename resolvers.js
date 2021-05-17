@@ -63,9 +63,7 @@ const resolvers = {
         },
     },
     Mutation: {
-        createProduct: async (_, { input }) => {
-            const { name, shopId } = input;
-
+        createProduct: async (_, { name, shopId }) => {
             const [createdProduct] = await knex('products').returning(['id', 'name']).insert({
                 name,
                 shop_id: shopId
@@ -74,13 +72,6 @@ const resolvers = {
             return createdProduct;
         },
         addToMyProducts: async (_, { id, userId }, context) => {
-            if (!context.user) {
-                return {
-                    statusCode: 401,
-                    message: 'Not authorized'
-                };
-            }
-
             // [VULN]: There is vulnerability because of lack of authorization check
 
             await knex('user_products').insert({
@@ -116,8 +107,8 @@ const resolvers = {
                 statusCode: 200
             };
         },
-        createUser: async (_, { user }) => {
-            const localUser = user;
+        createUser: async (_, { input }) => {
+            const localUser = input;
             localUser.password = await bcrypt.hash(localUser.password, saltRounds);
             const [createdUser] = await knex('users').returning(['id', 'name', 'email']).insert(localUser);
             const signedJWT = await jwt.sign({
@@ -131,12 +122,6 @@ const resolvers = {
             return {
                 token: signedJWT,
                 user: createdUser,
-            };
-        },
-        deleteUser: async (_, { userid }) => {
-            const [deletedUser] = await knex('users').returning(['id', 'name', 'email']).where('id', userid).del();
-            return {
-                user: deletedUser,
             };
         },
         loginUser: async (_, { input }) => {
